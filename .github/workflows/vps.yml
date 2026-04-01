@@ -1,0 +1,30 @@
+name: VPS
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update
+        run: sudo apt update
+
+      - name: Install SSH
+        run: sudo apt install -y openssh-server
+
+      - name: Set root password
+        run: echo "root:123456" | sudo chpasswd
+
+      - name: Start SSH
+        run: sudo service ssh start
+
+      - name: Install ngrok
+        run: |
+          wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-stable-linux-amd64.zip
+          unzip ngrok-stable-linux-amd64.zip
+
+      - name: Auth ngrok
+        run: ./ngrok config add-authtoken 2Leb0wEveVWkYQfaLerAJiuehFu_3EG9BmVTbGt7hFCHvvRWz
+
+      - name: Start tunnel
+        run: ./ngrok tcp 22
